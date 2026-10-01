@@ -1,0 +1,25 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Cache y temporales
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Node / Playwright
+node_modules/
+/test-results/
+/playwright-report/
+
+# Credenciales
+.env
+*.pem
+*.key
+
+# Archivos pesados
+/data/raw_pdfs/*.pdf
+!/data/raw_pdfs/.gitkeep
