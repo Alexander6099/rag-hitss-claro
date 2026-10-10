@@ -11,8 +11,10 @@
     "fuente_esperada": {
       "documento": "Manual_FTTH_v2.pdf",
       "pagina": 14,
-      "parrafo": 3
-    }git push -u origin main --tags
+      "parrafo": 3,
+      "estado": "PENDIENTE_DE_VERIFICACION"
+    },
+    "nota": "No afirmar que esta fuente existe hasta incorporarla y verificarla."
   },
   {
     "id": "Q02",
@@ -24,14 +26,17 @@
     "fuente_esperada": {
       "documento": "Normativa_Potencia_FTTH.pdf",
       "pagina": 8,
-      "parrafo": 1
-    }
+      "parrafo": 1,
+      "estado": "PENDIENTE_DE_VERIFICACION"
+    },
+    "nota": "Verificar el rango con documentación técnica autorizada."
   },
   {
     "id": "Q03",
     "categoria": "fuera_de_dominio",
     "pregunta": "¿Cuál es la receta para preparar un lomo saltado para cuatro personas?",
     "respuestas_patron": [],
-    "fuente_esperada": null
+    "fuente_esperada": null,
+    "nota": "Pregunta de control para comprobar abstención fuera del dominio."
   }
 ]

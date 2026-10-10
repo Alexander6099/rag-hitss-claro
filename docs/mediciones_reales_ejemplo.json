@@ -1,0 +1,10 @@
+[
+  {
+    "query_id": "Q01",
+    "latency_ms": null,
+    "answer_f1": null,
+    "context_recall": null,
+    "citation_correct": null,
+    "nota": "Plantilla vacía: reemplazar null solo con valores medidos y trazables."
+  }
+]

@@ -1,0 +1,1 @@
+Coloca aquí, solo de forma local y autorizada, los PDF de normativa que tengas permiso para procesar. Los PDF están excluidos de Git. No incorporar documentación interna ni datos sensibles sin autorización.

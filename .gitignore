@@ -1,25 +1,37 @@
-# Entornos virtuales
+
+# Entornos virtuales de Python
 .venv/
 venv/
 env/
 ENV/
 
-# Cache y temporales
+# Caché y archivos temporales de Python
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-# Node / Playwright
+# Variables de entorno y credenciales
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Node.js y herramientas de pruebas
 node_modules/
 /test-results/
 /playwright-report/
 
-# Credenciales
-.env
-*.pem
-*.key
+# Archivos del sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
 
-# Archivos pesados
-/data/raw_pdfs/*.pdf
-!/data/raw_pdfs/.gitkeep
+# Logs
+*.log
