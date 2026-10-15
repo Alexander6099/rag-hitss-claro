@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from __future__ import annotations
 
 import logging
@@ -89,33 +88,3 @@ def query(request: QueryRequest, authorization: str | None = Header(default=None
         # Keep the full diagnostic on the server, never return provider secrets to the browser.
         logger.exception("Error inesperado durante la consulta RAG: %s", exc)
         raise HTTPException(status_code=503, detail="No se pudo completar la consulta. Revisa los logs del backend para ver la causa; no se muestran detalles sensibles en la respuesta.") from exc
-=======
-from fastapi import FastAPI
-from backend.app.schemas import QueryRequest, QueryResponse
-
-app = FastAPI(
-    title="API RAG Global Hitss - Prototipo",
-    version="0.2.0",
-    description="Esqueleto técnico. El pipeline RAG real aún no está integrado."
-)
-
-@app.get("/", tags=["health"])
-def read_root():
-    return {"status": "ok", "service": "RAG Assistant - prototipo",
-            "rag_pipeline": "not_integrated"}
-
-@app.get("/health", tags=["health"])
-def health():
-    return {"status": "healthy"}
-
-@app.post("/api/v1/query", response_model=QueryResponse, tags=["query"])
-def query(request: QueryRequest):
-    # Abstención explícita: no inventar respuestas ni citas sin recuperación real.
-    return QueryResponse(
-        status="not_implemented",
-        answer="La consulta RAG todavía no está conectada a un corpus documental.",
-        citations=[],
-        abstained=True,
-        message="No se generó respuesta técnica: falta integrar recuperación y generación."
-    )
->>>>>>> 0135657e4a1604629e0c75ae104686f4497fde13

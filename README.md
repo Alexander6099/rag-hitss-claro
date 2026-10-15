@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Sistema web de asistencia inteligente basado en RAG — prototipo académico
 
 API web para consultar documentos PDF autorizados mediante recuperación densa con pgvector, recuperación léxica de PostgreSQL y fusión Reciprocal Rank Fusion. Se puede activar un Cross-Encoder mediante `RERANKER_MODEL`. Las respuestas generadas usan el contexto recuperado y muestran metadatos de las fuentes; el sistema se abstiene cuando la señal densa está por debajo del umbral configurado.
@@ -26,7 +25,7 @@ La configuración predeterminada usa `gemini-embedding-001` con `EMBEDDING_DIMEN
 ## Pruebas
 `pytest -q`
 
-Las pruebas actuales validan la API y la protección básica de carga; no llaman a OpenAI ni a una base de datos real. Para evaluar recuperación y generación hacen falta un corpus autorizado, consultas verificadas, respuestas de referencia, configuración registrada y ejecuciones repetibles.
+Las pruebas actuales validan la API y la protección básica de carga; no llaman a Gemini ni a una base de datos real. Para evaluar recuperación y generación hacen falta un corpus autorizado, consultas verificadas, respuestas de referencia, configuración registrada y ejecuciones repetibles.
 
 ## Seguridad y limitaciones
 - Cada petición a Gemini tiene un timeout de 20 segundos; los timeouts también se reintentan. La recuperación y la generación son operaciones separadas, por lo que una consulta completa puede tardar más que una petición individual.
@@ -45,45 +44,3 @@ Cuando existan datos reales para A, B y C, registra un JSON por consulta con `ca
 El script exige al menos 50 consultas únicas por candidato y rechaza datos faltantes; no inventa puntuaciones. C3 es una valoración teórica predefinida (A=5, B=4, C=3) y debe explicarse como tal. La comparación solo es válida si las consultas, el corpus, los modelos y el entorno son comparables.
 
 Para activar el Cross-Encoder fuera del contenedor base, instala `pip install -r requirements-reranker.txt` y configura `RERANKER_MODEL` con un identificador de modelo compatible. La selección del modelo y su calidad para español técnico deben evaluarse antes de reportar resultados.
-=======
-# Sistema web de asistencia inteligente basado en RAG — Global Hitss Perú (cuenta Claro)
-
-**Estado actual: prototipo de estructura técnica; pipeline RAG completo todavía no integrado.**
-
-Este repositorio contiene una API inicial, esquema de base de datos, banco de preguntas de ejemplo, validación estructural y utilidades para resumir mediciones reales. No prueba que Advanced RAG haya sido evaluado.
-
-## Arquitectura prevista
-- API: Python 3.11 + FastAPI.
-- Framework RAG: LangChain, pendiente de integración.
-- Embeddings previstos: `text-embedding-3-small`, dimensión declarada 1536; confirmar la dimensión real.
-- Almacenamiento previsto: PostgreSQL 16 + pgvector.
-- Reranker: Cross-Encoder multilingüe, pendiente de selección/integración y evaluación.
-- Modelo generativo previsto: GPT-4o-mini mediante API; requiere credenciales y revisión de seguridad.
-- Pruebas: pytest. Playwright no está configurado.
-- Banco: `tests/gold_standard_queries.json`, solo tres ejemplos iniciales; fuentes pendientes de verificación.
-
-## Ejecución local
-1. Instalar Python 3.11.
-2. Crear entorno: `py -3.11 -m venv .venv`
-3. Activar en Windows: `.venv\\Scripts\\activate`
-4. Instalar: `pip install -r requirements.txt`
-5. Ejecutar API: `uvicorn backend.app.main:app --reload`
-6. Abrir `http://127.0.0.1:8000/docs`.
-
-`/health` verifica la API. `/api/v1/query` se abstiene porque aún no existe recuperación ni generación integradas.
-
-## Pruebas
-- `pytest -q`
-- `python tests/poc_gold_standard.py`
-
-El segundo comando valida la estructura del banco; no ejecuta RAG ni calcula métricas.
-
-## Resumen de mediciones
-Cuando existan observaciones reales, preparar un JSON siguiendo `docs/mediciones_reales_ejemplo.json` y ejecutar:
-`python scripts/calcular_metricas.py ruta/al/archivo.json`
-
-No presentar datos ilustrativos como resultados reales. Registrar corpus, versión del código, hardware, configuración, consultas, evaluadores y procedimiento.
-
-## Evidencia académica
-Consultar `docs/ESTADO_IMPLEMENTACION.md`. Los umbrales RNF son objetivos propuestos hasta que se verifiquen. Los nombres de PDF del banco son ejemplos: comprobar que las fuentes existen y que sustentan las respuestas antes de usarlas como gold standard.
->>>>>>> 0135657e4a1604629e0c75ae104686f4497fde13

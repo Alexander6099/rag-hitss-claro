@@ -8,7 +8,6 @@ def test_health_endpoint():
     assert response.status_code == 200
     assert response.json()["status"] == "healthy"
 
-<<<<<<< HEAD
 def test_web_frontend_is_served():
     response = client.get("/")
     assert response.status_code == 200
@@ -62,18 +61,3 @@ def test_transient_provider_failure_is_explained(monkeypatch):
     assert response.status_code == 503
     assert "Gemini" in response.json()["detail"]
     assert response.headers["Retry-After"] == "30"
-=======
-def test_root_does_not_claim_rag_is_implemented():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json()["rag_pipeline"] == "not_integrated"
-
-def test_query_abstains_until_real_pipeline_exists():
-    response = client.post("/api/v1/query",
-        json={"question": "¿Cuál es el procedimiento de escalamiento FTTH?"})
-    assert response.status_code == 200
-    body = response.json()
-    assert body["abstained"] is True
-    assert body["citations"] == []
-    assert body["status"] == "not_implemented"
->>>>>>> 0135657e4a1604629e0c75ae104686f4497fde13

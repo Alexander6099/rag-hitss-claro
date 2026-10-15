@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from pydantic import BaseModel, Field, field_validator
 
 class QueryRequest(BaseModel):
@@ -15,28 +14,13 @@ class QueryRequest(BaseModel):
 class Citation(BaseModel):
     document: str
     version: str | None = None
-=======
-from pydantic import BaseModel, Field
-
-class QueryRequest(BaseModel):
-    question: str = Field(min_length=3, max_length=2000)
-
-class Citation(BaseModel):
-    document: str
->>>>>>> 0135657e4a1604629e0c75ae104686f4497fde13
     page: int | None = None
     paragraph: int | None = None
 
 class QueryResponse(BaseModel):
     status: str
     answer: str
-<<<<<<< HEAD
     citations: list[Citation] = Field(default_factory=list)
     abstained: bool = True
     message: str
     latency_ms: float | None = None
-=======
-    citations: list[Citation] = []
-    abstained: bool = True
-    message: str
->>>>>>> 0135657e4a1604629e0c75ae104686f4497fde13
