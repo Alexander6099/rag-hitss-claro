@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -16,6 +16,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
   backend:
     build: .
     environment:
@@ -32,32 +33,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-=======
-version: '3.8'
 
-services:
-  db:
-    image: pgvector/pgvector:pg16
-    container_name: postgres_rag
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: rag_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  backend:
-    build: .
-    container_name: api_rag
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://postgres:password123@db:5432/rag_db
-    depends_on:
-      - db
-
->>>>>>> 0135657e4a1604629e0c75ae104686f4497fde13
 volumes:
   pgdata:
