@@ -1,89 +1,161 @@
-<<<<<<< HEAD
-# Sistema web de asistencia inteligente basado en RAG — prototipo académico
+# Sistema web de asistencia inteligente basado en RAG
 
-API web para consultar documentos PDF autorizados mediante recuperación densa con pgvector, recuperación léxica de PostgreSQL y fusión Reciprocal Rank Fusion. Se puede activar un Cross-Encoder mediante `RERANKER_MODEL`. Las respuestas generadas usan el contexto recuperado y muestran metadatos de las fuentes; el sistema se abstiene cuando la señal densa está por debajo del umbral configurado.
+**Prototipo académico para la consulta de documentación técnica — Global Hitss Perú / Cuenta Claro**
 
-**Límite importante:** este repositorio no contiene manuales operativos de Claro/Global Hitss ni un Gold Standard validado. No se deben presentar las preguntas de ejemplo como datos reales ni afirmar que se han medido F1, Context Recall, TMR, precisión de citas o latencia bajo carga. La implementación del pipeline tampoco equivale a una evaluación empírica de los candidatos A, B y C.
+## 1. Descripción del proyecto
 
-## Componentes
-- FastAPI y una interfaz web mínima en `/`.
-- PostgreSQL 16 + pgvector (HNSW) y búsqueda léxica con `tsvector`/GIN.
-- Embeddings y generación con Google Gemini API (requiere conexión a Internet y una clave válida).
-- Fusión de rankings; Cross-Encoder opcional configurado por variable de entorno.
-- Ingesta de PDF con metadatos de documento, versión, página y fragmento.
-- Registro básico de consultas y pruebas automatizadas.
+Este repositorio contiene un prototipo de asistente inteligente basado en generación aumentada por recuperación (Retrieval-Augmented Generation, RAG), orientado a facilitar la consulta de información contenida en documentos técnicos PDF.
 
-## Inicio con Docker
-1. Copiar `.env.example` a `.env`.
-2. Configurar `POSTGRES_PASSWORD` con una contraseña segura y `GEMINI_API_KEY` con una clave válida de Google AI Studio.
-3. Definir `API_ACCESS_TOKEN` con un secreto aleatorio para habilitar la carga de documentos.
-4. Ejecutar `docker compose up --build`.
-5. Abrir `http://127.0.0.1:8000` o la documentación en `http://127.0.0.1:8000/docs`.
-6. Cargar solo PDF cuyo uso esté autorizado. Los PDF escaneados requieren OCR, todavía no incluido.
+El sistema permite incorporar documentos, extraer y segmentar su contenido, almacenarlo en una base de datos y recuperar fragmentos relevantes para responder consultas formuladas en lenguaje natural.
 
-La configuración predeterminada usa `gemini-embedding-001` con `EMBEDDING_DIMENSIONS=1536`, compatible con `VECTOR(1536)` del esquema SQL. Si cambias la dimensión, también debes migrar el esquema de PostgreSQL y volver a indexar todos los documentos con los mismos embeddings. Para iniciar localmente: instalar dependencias, configurar variables de entorno, ejecutar `database/init.sql` en PostgreSQL con pgvector y lanzar `uvicorn backend.app.main:app --reload`.
+Las respuestas se generan mediante Google Gemini utilizando el contexto recuperado e incluyen referencias documentales que facilitan la identificación de las fuentes consultadas.
 
-## Pruebas
-`pytest -q`
+El proyecto se desarrolla con fines académicos y corresponde a un prototipo funcional, no a una plataforma corporativa desplegada en producción.
 
-Las pruebas actuales validan la API y la protección básica de carga; no llaman a OpenAI ni a una base de datos real. Para evaluar recuperación y generación hacen falta un corpus autorizado, consultas verificadas, respuestas de referencia, configuración registrada y ejecuciones repetibles.
+## 2. Objetivo
 
-## Seguridad y limitaciones
-- Cada petición a Gemini tiene un timeout de 20 segundos; los timeouts también se reintentan. La recuperación y la generación son operaciones separadas, por lo que una consulta completa puede tardar más que una petición individual.
-- Si Gemini devuelve 429 o un error transitorio 500/502/503/504, se realizan hasta tres intentos por operación, con pausas de uno y dos segundos. Si persiste, la API devuelve 503 con un mensaje de disponibilidad/cuota y `Retry-After: 30`. Una consulta fallida no elimina los PDF ya cargados; no hace falta volver a subirlos.
-- No subir `.env`, claves, tokens ni documentos internos al repositorio.
-- El token de acceso es una protección básica de prototipo, no sustituye SSO/JWT corporativo, gestión de roles ni una auditoría de seguridad.
-- No hay OCR, interfaz de administración avanzada, control corporativo de roles, aislamiento multiusuario ni despliegue productivo.
-- El umbral de recuperación es configurable y no está calibrado. Las citas enumeran fuentes recuperadas; la verificación humana de que cada afirmación está respaldada sigue siendo necesaria.
-- Si `RERANKER_MODEL` está vacío, el sistema no ejecuta Cross-Encoder; usa la fusión de rankings híbridos.
+Desarrollar un prototipo de sistema web basado en RAG que facilite la búsqueda y recuperación de información técnica mediante consultas en lenguaje natural, integrando procesamiento documental, recuperación híbrida y generación de respuestas contextualizadas.
 
-## Matriz comparativa de candidatos
-Cuando existan datos reales para A, B y C, registra un JSON por consulta con `candidate`, `query_id`, `answer_f1`, `context_recall`, `latency_ms` (lista con repeticiones), `citation_correct` y `cost_usd`. Luego ejecuta:
+## 3. Tecnologías utilizadas
 
-`python scripts/evaluar_matriz.py ruta/mediciones_candidatos.json`
+| Componente | Tecnología |
+|---|---|
+| Lenguaje de programación | Python |
+| Backend | FastAPI |
+| Interfaz | HTML y JavaScript |
+| Base de datos | PostgreSQL 16 |
+| Búsqueda vectorial | pgvector |
+| Modelo de inteligencia artificial | Google Gemini |
+| Procesamiento de PDF | pypdf |
+| Contenedores | Docker y Docker Compose |
+| Pruebas de software | pytest |
 
-El script exige al menos 50 consultas únicas por candidato y rechaza datos faltantes; no inventa puntuaciones. C3 es una valoración teórica predefinida (A=5, B=4, C=3) y debe explicarse como tal. La comparación solo es válida si las consultas, el corpus, los modelos y el entorno son comparables.
+## 4. Arquitectura del sistema
 
-Para activar el Cross-Encoder fuera del contenedor base, instala `pip install -r requirements-reranker.txt` y configura `RERANKER_MODEL` con un identificador de modelo compatible. La selección del modelo y su calidad para español técnico deben evaluarse antes de reportar resultados.
-=======
-# Sistema web de asistencia inteligente basado en RAG — Global Hitss Perú (cuenta Claro)
+El prototipo utiliza una arquitectura compuesta por las siguientes capas:
 
-**Estado actual: prototipo de estructura técnica; pipeline RAG completo todavía no integrado.**
+1. **Interfaz web:** permite incorporar documentos y realizar consultas.
+2. **API REST:** recibe solicitudes, valida entradas y coordina las operaciones del sistema.
+3. **Procesamiento documental:** extrae el texto de archivos PDF y lo divide en fragmentos.
+4. **Almacenamiento:** registra documentos, fragmentos y consultas en PostgreSQL.
+5. **Recuperación híbrida:** combina búsqueda vectorial y búsqueda de texto completo.
+6. **Generación de respuestas:** utiliza Google Gemini para elaborar respuestas basadas en los fragmentos recuperados.
 
-Este repositorio contiene una API inicial, esquema de base de datos, banco de preguntas de ejemplo, validación estructural y utilidades para resumir mediciones reales. No prueba que Advanced RAG haya sido evaluado.
+La recuperación híbrida combina resultados mediante Reciprocal Rank Fusion (RRF). El sistema contempla la posibilidad de incorporar un reranker Cross-Encoder mediante configuración adicional.
 
-## Arquitectura prevista
-- API: Python 3.11 + FastAPI.
-- Framework RAG: LangChain, pendiente de integración.
-- Embeddings previstos: `text-embedding-3-small`, dimensión declarada 1536; confirmar la dimensión real.
-- Almacenamiento previsto: PostgreSQL 16 + pgvector.
-- Reranker: Cross-Encoder multilingüe, pendiente de selección/integración y evaluación.
-- Modelo generativo previsto: GPT-4o-mini mediante API; requiere credenciales y revisión de seguridad.
-- Pruebas: pytest. Playwright no está configurado.
-- Banco: `tests/gold_standard_queries.json`, solo tres ejemplos iniciales; fuentes pendientes de verificación.
+## 5. Funcionalidades implementadas
 
-## Ejecución local
-1. Instalar Python 3.11.
-2. Crear entorno: `py -3.11 -m venv .venv`
-3. Activar en Windows: `.venv\\Scripts\\activate`
-4. Instalar: `pip install -r requirements.txt`
-5. Ejecutar API: `uvicorn backend.app.main:app --reload`
-6. Abrir `http://127.0.0.1:8000/docs`.
+- Incorporación de documentos PDF.
+- Extracción y segmentación de texto.
+- Generación de embeddings.
+- Almacenamiento de fragmentos en PostgreSQL con pgvector.
+- Recuperación de información mediante búsqueda híbrida.
+- Consultas en lenguaje natural.
+- Generación de respuestas con Google Gemini.
+- Presentación de referencias documentales.
+- Registro básico de consultas.
+- Manejo de errores relacionados con el servicio de generación.
 
-`/health` verifica la API. `/api/v1/query` se abstiene porque aún no existe recuperación ni generación integradas.
+## 6. Estructura principal del repositorio
 
-## Pruebas
-- `pytest -q`
-- `python tests/poc_gold_standard.py`
+```text
+rag-hitss-claro/
+├── backend/
+│   └── app/
+│       ├── main.py
+│       └── services/
+│           └── rag.py
+├── database/
+│   └── init.sql
+├── docs/
+├── scripts/
+├── tests/
+├── .env.example
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+```
 
-El segundo comando valida la estructura del banco; no ejecuta RAG ni calcula métricas.
+## 7. Requisitos previos
 
-## Resumen de mediciones
-Cuando existan observaciones reales, preparar un JSON siguiendo `docs/mediciones_reales_ejemplo.json` y ejecutar:
-`python scripts/calcular_metricas.py ruta/al/archivo.json`
+Para ejecutar el proyecto se requiere:
 
-No presentar datos ilustrativos como resultados reales. Registrar corpus, versión del código, hardware, configuración, consultas, evaluadores y procedimiento.
+- Docker y Docker Compose.
+- Acceso a Internet.
+- Una clave de API válida de Google Gemini.
+- Un archivo de configuración de variables de entorno.
 
-## Evidencia académica
-Consultar `docs/ESTADO_IMPLEMENTACION.md`. Los umbrales RNF son objetivos propuestos hasta que se verifiquen. Los nombres de PDF del banco son ejemplos: comprobar que las fuentes existen y que sustentan las respuestas antes de usarlas como gold standard.
->>>>>>> 0135657e4a1604629e0c75ae104686f4497fde13
+## 8. Instalación y ejecución
+
+### Paso 1. Obtener el repositorio
+
+```bash
+git clone https://github.com/Alexander6099/rag-hitss-claro.git
+cd rag-hitss-claro
+```
+
+### Paso 2. Configurar las variables de entorno
+
+Crear el archivo `.env` tomando como referencia `.env.example`.
+
+Configurar las variables necesarias, especialmente:
+
+```env
+POSTGRES_USER=rag_user
+POSTGRES_PASSWORD=CAMBIAR_POR_UNA_CONTRASENA_SEGURA
+POSTGRES_DB=rag_db
+GEMINI_API_KEY=COLOCAR_CLAVE_PERSONAL
+API_ACCESS_TOKEN=COLOCAR_TOKEN_SEGURO
+```
+
+Los valores anteriores son ejemplos de configuración. No deben utilizarse como credenciales reales ni publicarse claves privadas en GitHub.
+
+### Paso 3. Iniciar los servicios
+
+```bash
+docker compose up --build
+```
+
+### Paso 4. Acceder a la aplicación
+
+Interfaz web:
+
+http://127.0.0.1:8000
+
+Documentación interactiva de la API:
+
+http://127.0.0.1:8000/docs
+
+## 9. Funcionamiento del sistema
+
+El proceso general de consulta comprende las siguientes etapas:
+
+1. El usuario incorpora un documento PDF.
+2. El sistema extrae y segmenta el contenido.
+3. Se generan representaciones vectoriales de los fragmentos.
+4. Los fragmentos y sus metadatos se almacenan en PostgreSQL.
+5. El usuario formula una pregunta.
+6. El sistema recupera fragmentos mediante búsqueda híbrida.
+7. Google Gemini genera una respuesta utilizando el contexto recuperado.
+8. La interfaz presenta la respuesta y sus referencias documentales.
+
+## 10. Pruebas y validación
+
+El proyecto contempla pruebas de software mediante pytest.
+
+Para ejecutar las pruebas configuradas en el repositorio:
+
+```bash
+pytest -q
+```
+
+Durante la verificación funcional del prototipo se han documentado escenarios de incorporación de archivos PDF, recuperación de información con referencias y manejo de incidencias del proveedor de inteligencia artificial.
+
+Estas verificaciones permiten examinar las funcionalidades centrales del prototipo. No representan, por sí solas, una evaluación experimental completa de precisión, rendimiento bajo carga o comparación entre arquitecturas RAG.
+
+## 11. Documentación utilizada
+
+La implementación permite procesar documentos PDF de contenido técnico estructurado para verificar las operaciones de extracción, segmentación, indexación y recuperación de información.
+
+La incorporación de documentación debe respetar las condiciones de acceso y uso de cada fuente. El repositorio no requiere publicar documentación interna de las organizaciones mencionadas en el contexto académico del
