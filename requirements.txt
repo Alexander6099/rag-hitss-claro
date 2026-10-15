@@ -1,0 +1,12 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+psycopg2-binary==2.9.10
+pgvector==0.3.6
+numpy==2.2.1
+pytest==8.3.4
+httpx==0.28.1
+google-genai>=1.0.0,<2.0.0
+pypdf==5.1.0
+python-multipart==0.0.20
+# Solo si se configura RERANKER_MODEL: requiere descargar un modelo compatible.

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "Q01",
+    "categoria": "codigos_averia",
+    "pregunta": "¿Cuál es el procedimiento de escalamiento para la avería E-4012 en la ONT?",
+    "respuestas_patron": [
+      "Verificar potencia óptica",
+      "Reiniciar ONT",
+      "Escalar a Nivel 2 si persiste el código E-4012"
+    ],
+    "fuente_esperada": {
+      "documento": "Manual_FTTH_v2.pdf",
+      "pagina": 14,
+      "parrafo": 3,
+      "estado": "PENDIENTE_DE_VERIFICACION"
+    },
+    "nota": "No afirmar que esta fuente existe hasta incorporarla y verificarla."
+  },
+  {
+    "id": "Q02",
+    "categoria": "normativa_operativa",
+    "pregunta": "¿Cuáles son los umbrales aceptables de potencia óptica de recepción en redes FTTH?",
+    "respuestas_patron": [
+      "La potencia debe ubicarse entre -8 dBm y -27 dBm en la interfaz Rx de la ONT"
+    ],
+    "fuente_esperada": {
+      "documento": "Normativa_Potencia_FTTH.pdf",
+      "pagina": 8,
+      "parrafo": 1,
+      "estado": "PENDIENTE_DE_VERIFICACION"
+    },
+    "nota": "Verificar el rango con documentación técnica autorizada."
+  },
+  {
+    "id": "Q03",
+    "categoria": "fuera_de_dominio",
+    "pregunta": "¿Cuál es la receta para preparar un lomo saltado para cuatro personas?",
+    "respuestas_patron": [],
+    "fuente_esperada": null,
+    "nota": "Pregunta de control para comprobar abstención fuera del dominio."
+  }
+]
